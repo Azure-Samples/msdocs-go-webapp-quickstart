@@ -20,15 +20,15 @@ Learn how to use Docker, Azure Container Registry, and Azure Container Apps to d
 
 1. Create an Azure resource group.
     ```bash
-    az group create --name myResourceGroup --location eastus
+    az group create --name <resourceGroupName> --location eastus
     ```
 2. Create an Azure Container Registry.
     ```bash
-    az acr create --resource-group myResourceGroup --name gowebappdemo --sku basic --admin-enabled true
+    az acr create --resource-group <resourceGroupName> --name <acrName> --sku basic --admin-enabled true
     ```
 3. Log into the Azure container instance.
     ```bash
-    az acr login --name gowebappdemo  
+    az acr login --name <acrName>  
     ```
 
 ### Build and push the Docker image
@@ -36,42 +36,42 @@ Learn how to use Docker, Azure Container Registry, and Azure Container Apps to d
 
 1. Build and push the docker image to ACR.
     ```bash
-    docker build -t <login-server>/gowebapp:latest
+    docker build -t <loginServer>/<imageName>:latest
     ```
 2. Push the docker image to ACR.
     ```bash
-    docker push <login-server>/gowebapp:latest
+    docker push <loginServer>/<imageName>:latest
     ```
 3. Verify the image was deployed to ACR.
     ```bash
-    az acr repository list --name gowebappdemo --output table
+    az acr repository list --name <acrName> --output table
     ```
 
 ### Deploy the Azure Container App
 
 1. Get the ARC admin password.
     ```bash
-    password=$(az acr credential show -n gowebappdemo --query 'passwords[0].value' --out tsv)
+    password=$(az acr credential show -n <acrName> --query 'passwords[0].value' --out tsv)
     ```
 2. Create a container app environment.
     ```bash
     az containerapp env create \
-    --name goWebAppContainerAppEnv \
-    --resource-group myResourceGroup \
+    --name <containerAppEnvName> \
+    --resource-group <resourceGroupName> \
     --location "East US"
     ```
 3. Deploy the container app.
     ```bash
     az containerapp create \
-  --name my-container-app \
-  --resource-group myResourceGroup \
-  --environment goWebAppContainerAppEnv \
-  --image "<login-server>/gowebapp:latest" \
-  --registry-server "<login-server>" \
-  --registry-username "gowebappdemo" \
-  --registry-password "$password" \
-  --target-port 8080 \
-  --ingress 'external'
+    --name <containerAppName> \
+    --resource-group <resourceGroupName> \
+    --environment <goWebAppContainerAppEnv> \
+    --image "<loginServer>/<imageName>:latest" \
+    --registry-server "<loginServer>" \
+    --registry-username "<acrName" \
+    --registry-password "$password" \
+    --target-port 8080 \
+    --ingress 'external'
     ```
 
 ## Resources
