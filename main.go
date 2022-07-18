@@ -9,7 +9,7 @@ var name string
 var tpl *template.Template
 
 func init() {
-	tpl = template.Must(template.ParseGlob("templates/*.gohtml"))
+	tpl = template.Must(template.ParseGlob("templates/*.html"))
 }
 
 func main() {
@@ -26,11 +26,11 @@ func index(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/hello", http.StatusSeeOther)
 		return
 	}
-	tpl.ExecuteTemplate(w, "index.gohtml", nil)
+	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	tpl.ExecuteTemplate(w, "hello.gohtml", name)
+	tpl.ExecuteTemplate(w, "hello.html", name)
 }
 
 func favicon(w http.ResponseWriter, req *http.Request) {
